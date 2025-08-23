@@ -1,13 +1,22 @@
 public class OrderService {
-    double taxRate = 0.18;
-    EmailClient email = new EmailClient();
+    TaxCalculator tc ; 
+    Notifier noti; 
+    OrderRepository repo ;
 
-    double totalWithTax(double subtotal) {
-        return subtotal + subtotal * taxRate;
+    public OrderService( TaxCalculator tc , Notifier noti , OrderRepository repo){
+        this.tc = tc ;
+        this.noti = noti ; 
+        this.repo = repo ; 
     }
+  
     void checkout(String customerEmail, double subtotal) {
-        double total = totalWithTax(subtotal);
-        email.send(customerEmail, "Thanks! Your total is " + total);
-        System.out.println("Order stored (pretend DB).");
+        double total = tc.totalWithTax(subtotal);
+        noti.send(customerEmail, "Thanks! Your total is " + total);
+        repo.save("1");
     }
 }
+
+// here many things are happening which is voiolationg the SRP 
+// 1 . tax calculation 
+// 2 . notify through email 
+// 3 . storing in DB 
